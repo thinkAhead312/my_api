@@ -242,7 +242,7 @@ $app = new \Slim\Slim();
      * Authorization: Put API Key in Request Header
      * Method: GET
      * */
-    $app->get('/students', 'authenticateFaculty', function() use ($app){
+    $app->get('/students', function() use ($app){
         $db = new DbOperation();
         $result = $db->getAllStudents();
         $response = array();
