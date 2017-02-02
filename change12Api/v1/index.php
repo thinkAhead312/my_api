@@ -52,8 +52,90 @@ $app = new \Slim\Slim();
         }
          //Displaying the response
         echoResponse(200,$response);
-
     });
+
+    /*
+     * /users to fetch all users from db
+    |* http://localhost:8081/change12Api/userlogin
+     * METHOD GET
+     */
+     $app->get('/users', function() use ($app){
+        $db = new DbOperation();
+        $result = $db->getUsers();
+        $response = array();
+        $response['error'] = false;
+        $response['row_count'] = $result->num_rows;
+        $response['users'] = array();
+
+        while($row = $result->fetch_assoc()){
+            $temp = array();
+            $temp['id'] = $row['id'];
+            $temp['first_name'] = $row['first_name'];
+            $temp['last_name'] = $row['first_name'];
+            $temp['health_status'] = $row['health_status'];
+            array_push($response['users'],$temp);
+        }
+        echoResponse(200,$response);
+    });
+
+
+    /*
+     * /wavechangees to fetch all changees on particular wave
+     * METHOD GET
+     * http://localhost:8081/change12Api/v1/wavechangees/:id
+     */ 
+     $app->get('/wavechangees/:id', function($wave_num) use ($app){
+        $db = new DbOperation();
+        $result = $db->getWaveChangees($wave_num);
+        $response = array();
+        $response['error'] = false;
+        $response['changees'] = array(); 
+         while($row = $result->fetch_assoc()){
+            $temp = array();
+            $temp['name'] = $row['change_12'];
+            $temp['changee'] = $row['changee'];
+            // $temp['user_item'] = $db->getUserbyId($row['changee']);
+            $temp['first_name'] = $row['first_name'];
+            $temp['last_name'] = $row['last_name'];
+            $temp['change_1_ok'] = $row['change_1_ok'];
+            array_push($response['changees'],$temp);
+        }
+        echoResponse(200,$response);
+     });
+
+     /*
+      * /wavelesson1changees/:wave_num/:lesson_num to fetch all currently on particular change12 lesson
+      * METHOD GET
+      */
+     $app->get('/wavelessonchangees/:wave_num/:lesson_num', function($wave_num, $lesson_num) use ($app){
+        $db = new DbOperation(); //creating Dboperation object
+        $result = $db->getWaveChangees($wave_num); //fetch all wave changees
+        $response = array();
+        $response['error'] = false;
+        $response['changees'] = array(); 
+        while($row = $result->fetch_assoc()){
+            $change_status = false;
+            for($i=1; $i <= 5; $i++) {
+                if($row['change_'.$i.'_ok'] == 'on' && $i == $lesson_num) {
+                    $change_status = true;
+                } elseif($row['change_'.$i.'_ok'] == 'on') {
+                    $change_status = false;
+                }
+            }
+            if($change_status) {
+                $temp = array();
+                $temp['wave_num'] = $row['change_12'];
+                $temp['changee'] = $row['changee'];
+                // $temp['user_item'] = $db->getUserbyId($row['changee']);
+                $temp['first_name'] = $row['first_name'];
+                $temp['last_name'] = $row['last_name'];
+                array_push($response['changees'],$temp);
+            }
+        }
+        echoResponse(200,$response);
+     });
+
+
 
     /*
      * method echoResponse to display response
