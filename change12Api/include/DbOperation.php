@@ -74,6 +74,7 @@ class DbOperation
         return $user;
     }
 
+
     /*
      * method getUsers will return all the row in users tbl
      */
@@ -101,8 +102,34 @@ class DbOperation
     }
 
 
+     /*
+     * method searchByName query users table by name
+     * @params $name, inputted name to search
+     */
+    public function getDiscipleNameByName($name) {
+        $stmt = $this->con->prepare("SELECT * FROM users WHERE first_name LIKE ? ");
+        $name = "%". $name . "%";
+        $stmt->bind_param("s", $name); //bind string username to params
+        $stmt->execute();
+        $users = $stmt->get_result();
+        $stmt->close();
+        return $users;
+    }
 
+     /*
+     * method getUserbyId will return user detail by ID
+     * @params $id, id of the disciple
+     */
+    public function getDisciplerNameById($id) {
+        //create sql statement
+        $stmt = $this->con->prepare("SELECT * FROM users WHERE id=?");
+        $stmt->bind_param("i",$id); //bind param $id
+        $stmt->execute();
+        //Getting the student result array
+        $user = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        //returning the student
+        return $user['first_name'] . ' ' . $user['nick_name']  . ' ' . $user['last_name'];
+    }
 
-
-   
 }
