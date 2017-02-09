@@ -34,16 +34,18 @@ $app = new \Slim\Slim();
             //Getting user detail
             $user = $db->getUser($username);
 
+            $is_admin = strpos($user['roles'], 'ROLE_ADMIN') !== false ? true : false; //check if user isAdmin
+
             //Generating response
             $response['error'] = false;
-            $response['id'] = $user['id'];
-            $response['first_name'] = $user['first_name'];
-            $response['nick_name'] = $user['nick_name'];
-            $response['middle_name'] = $user['middle_name'];
-            $response['last_name'] = $user['last_name'];
-            $response['gender'] = $user['gender'];
-            $response['birth_date'] = $user['birth_date'];
-            $response['nationality'] = $user['nationality'];
+            $response['user']['id'] = $user['id'];
+            $response['user']['first_name'] = $user['first_name'];
+            $response['user']['nick_name'] = $user['nick_name'];
+            $response['user']['middle_name'] = $user['middle_name'];
+            $response['user']['last_name'] = $user['last_name'];
+            $response['user']['full_name'] = $user['first_name'] . " \"" . $user['nick_name'] . "\" ". $user['last_name'];
+            $response['user']['username'] = $user['username'];
+            $response['user']['role'] = $is_admin;
         }
         else{
             //Generating response
