@@ -39,13 +39,13 @@ $app = new \Slim\Slim();
             //Generating response
             $response['error'] = false;
             $response['user']['id'] = $user['id'];
-            $response['user']['first_name'] = $user['first_name'];
-            $response['user']['nick_name'] = $user['nick_name'];
-            $response['user']['middle_name'] = $user['middle_name'];
-            $response['user']['last_name'] = $user['last_name'];
-            $response['user']['full_name'] = $user['first_name'] . " \"" . $user['nick_name'] . "\" ". $user['last_name'];
+            $response['user']['first_name'] = utf8_encode($user['first_name']);
+            $response['user']['nick_name'] = utf8_encode($user['nick_name']);
+            $response['user']['middle_name'] = utf8_encode($user['middle_name']);
+            $response['user']['last_name'] = utf8_encode($user['last_name']);
+            $response['user']['full_name'] = utf8_encode($user['full_name']);
             $response['user']['username'] = $user['username'];
-            $response['user']['role'] = $is_admin;
+            $response['user']['is_admin'] = $is_admin;
         }
         else{
             //Generating response
@@ -64,6 +64,7 @@ $app = new \Slim\Slim();
      $app->get('/users', function() use ($app){
         $db = new DbOperation();
         $result = $db->getUsers();
+        
         $response = array();
         $response['row_count'] = $result->num_rows;
         $response['error'] = false;
@@ -71,8 +72,8 @@ $app = new \Slim\Slim();
         while($row = $result->fetch_assoc()){
             $temp = array();
             $temp['id'] = $row['id'];
-            $temp['first_name'] = $row['first_name'];
-            $temp['last_name'] = $row['first_name'];
+            $temp['first_name'] =  utf8_encode($row['first_name']);
+            $temp['last_name'] =  utf8_encode($row['last_name']);
             $temp['health_status'] = $row['health_status'];
             array_push($response['users'],$temp);
         }

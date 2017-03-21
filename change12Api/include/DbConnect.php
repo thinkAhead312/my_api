@@ -26,7 +26,7 @@ class DbConnect
         //Checking if any error occured while connecting
         if (mysqli_connect_errno()) {
             echo "Failed to connect to MySQL: " . mysqli_connect_error();
-        }
+        } 
 
         //finally returning the connection link
         return $this->con;
