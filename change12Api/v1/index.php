@@ -64,7 +64,7 @@ $app = new \Slim\Slim();
      $app->get('/users', function() use ($app){
         $db = new DbOperation();
         $result = $db->getUsers();
-        
+
         $response = array();
         $response['row_count'] = $result->num_rows;
         $response['error'] = false;
@@ -72,9 +72,33 @@ $app = new \Slim\Slim();
         while($row = $result->fetch_assoc()){
             $temp = array();
             $temp['id'] = $row['id'];
+            $temp['slug'] =  utf8_encode($row['slug']);
             $temp['first_name'] =  utf8_encode($row['first_name']);
+            $temp['middle_name'] =  utf8_encode($row['middle_name']);
             $temp['last_name'] =  utf8_encode($row['last_name']);
+            $temp['full_name'] =  utf8_encode($row['full_name']);
+            $temp['nick_name'] =  utf8_encode($row['nick_name']);
+            $temp['gender'] = $row['gender'];
+            $temp['birth_date'] = $row['birth_date'];
+            $temp['nationality'] = $row['nationality'];
+            $temp['home_address'] = $row['home_address'];
+            $temp['city_address'] = $row['city_address'];
+            $temp['contact_number'] = $row['contact_number'];
+            $temp['email_address'] = utf8_encode($row['email_address']);
+            $temp['school'] = $row['school'];
+            $temp['degree'] = $row['degree'];
+            $temp['marital_status'] = $row['marital_status'];
+            $temp['company'] = $row['company'];
+            $temp['job_position'] = $row['job_position'];
+            $temp['date_won'] = $row['date_won'];
+            $temp['invited_by'] = $row['invited_by'];
+            $temp['discipler'] = $row['discipler'];
             $temp['health_status'] = $row['health_status'];
+            $temp['username'] = utf8_encode($row['username']);
+            $temp['password'] = $row['password'];
+            $is_admin = strpos($row['roles'], 'ROLE_ADMIN') !== false ? true : false; //check if user isAdmin
+            $temp['roles'] = $is_admin;
+
             array_push($response['users'],$temp);
         }
         echoResponse(200,$response);
