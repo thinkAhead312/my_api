@@ -38,7 +38,7 @@ $app = new \Slim\Slim();
 
             //Generating response
             $response['error'] = false;
-            $response['user']['id'] = $user['id'];
+            $response['user']['disciple_id'] = $user['id'];
             $response['user']['first_name'] = utf8_encode($user['first_name']);
             $response['user']['nick_name'] = utf8_encode($user['nick_name']);
             $response['user']['middle_name'] = utf8_encode($user['middle_name']);
@@ -71,7 +71,7 @@ $app = new \Slim\Slim();
         $response['users'] = array();
         while($row = $result->fetch_assoc()){
             $temp = array();
-            $temp['id'] = $row['id'];
+            $temp['disciple_id'] = $row['id'];
             $temp['slug'] =  utf8_encode($row['slug']);
             $temp['first_name'] =  utf8_encode($row['first_name']);
             $temp['middle_name'] =  utf8_encode($row['middle_name']);
@@ -104,7 +104,6 @@ $app = new \Slim\Slim();
         echoResponse(200,$response);
     });
 
-
       /*
      * /users to fetch all users from db
     |* http://localhost:8081/change12Api/userlogin
@@ -126,13 +125,60 @@ $app = new \Slim\Slim();
         $response['gender'] = $user['gender'];
         $response['birth_date'] = $user['birth_date'];
         $response['nationality'] = $user['nationality'];
-
+       
         echoResponse(200,$response);
-
 
     });
 
+     /*
+         * /change12 to fetch all change12 from db
+        |* http://localhost/change12Api/change12
+         * METHOD GET
+     */
 
+
+     $app->get('/change12', function() use ($app){
+        $db = new DbOperation();
+        $result = $db->getChange12();
+
+        $response = array();
+        $response['change12_row_count'] = $result->num_rows;
+        $response['error'] = false;
+        $response['change12'] = array();
+        while($row = $result->fetch_assoc()){
+            $temp = array();
+            $temp['id'] = $row['id'];
+            $temp['wave_num'] =  $row['wave_num'];
+            $temp['start_date'] =  $row['start_date'];
+            $temp['end_date'] =  $row['end_date'];
+            array_push($response['change12'],$temp);
+        }
+
+        $changees_result = $db->getChangee();
+        $response['changees_row_count'] = $changees_result->num_rows;
+        $response['changees'] = array();
+
+       while($row = $changees_result->fetch_assoc()){
+            $temp = array();
+            $temp['id'] = $row['id'];
+            $temp['change_12'] =  $row['change_12'];
+            $temp['changee'] =  $row['changee'];
+            $temp['change_1_ok'] =  $row['change_1_ok'];
+            $temp['change_1_date'] =  $row['change_1_date'];
+            $temp['change_2_ok'] =  $row['change_2_ok'];
+            $temp['change_2_date'] =  $row['change_2_date'];
+            $temp['change_3_ok'] =  $row['change_3_ok'];
+            $temp['change_3_date'] =  $row['change_3_date'];
+            $temp['change_4_ok'] =  $row['change_4_ok'];
+            $temp['change_4_date'] =  $row['change_4_date'];
+            $temp['change_5_ok'] =  $row['change_5_ok'];
+            $temp['change_5_date'] =  $row['change_5_date'];
+            array_push($response['changees'],$temp);
+        }
+
+
+        echoResponse(200,$response);
+     });
 
     /*
      * /wavechangees to fetch all changees on particular wave

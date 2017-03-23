@@ -89,6 +89,32 @@ class DbOperation
     }
 
     /*
+     * method getChange12 will return all change12 wave
+     * 
+    */
+
+    public function getChange12() {
+        $stmt = $this->con->prepare("SELECT * FROM change12");
+        $stmt->execute();
+        $change12 = $stmt->get_result();
+        $stmt->close();
+        return $change12;
+    }
+
+    /*
+     * method getChangee will return all the changees
+     *
+     */
+  
+    public function getChangee() {
+            $stmt = $this->con->prepare("SELECT * FROM changees");
+            $stmt->execute();
+            $changees = $stmt->get_result();
+            $stmt->close();
+            return $changees;
+    }
+    
+    /*
      * method getWaveChangees will return all "changees" on a particular wave
      * @params $wave_num, wave number
      */
